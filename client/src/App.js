@@ -3,7 +3,7 @@ import axios from 'axios';
 import SavedList from './Movies/SavedList'
 import MovieList from './Movies/MovieList'
 import Movie from './Movies/Movie'
-import {Route, Switch, useParam} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 
 const App = () => {
   const [savedList, setSavedList] = useState([])
@@ -12,31 +12,25 @@ const App = () => {
   useEffect(() => {
     const getMovies = () => {
       axios.get('http://localhost:5000/api/movies')
-        .then(response => {
-          setMovieList(response.data); console.log('test')
-        })
-        .catch(error => {
-          console.error('Server Error', error)
-        })
+        .then(response => setMovieList(response.data))
+        .catch(error => console.error('Server Error', error))
     }
     getMovies()
   }, [])
 
-  const addToSavedList = movie => {
-    setSavedList([...savedList, movie])
-  };
+  const addToSavedList = movie => setSavedList([...savedList, movie])
 
-  
   return (
     <div>
       <SavedList list={savedList} />
       <Switch>
-        <Route path="/" exact>
-          <MovieList movies={movieList}/> 
-        </Route>
-        <Route path="/movies/:id">
-          <Movie/> 
-        </Route>
+        <Route 
+          path="/" 
+          exact render={()=> 
+          <MovieList movies={movieList}/>}/>
+        <Route 
+          path="/movies/:id" 
+          component= {Movie}/>
       </Switch>
     </div>
   );
